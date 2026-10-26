@@ -1,0 +1,42 @@
+---
+# Point CentOS 6/7 yum at ansible/files/centos-6.repo and centos-7.repo, then
+# update ca-certificates from base/updates/extras only.
+#
+# Uses raw so the target does not need a Python new enough for current Ansible.
+# CentOS 7's package is new enough to include GlobalSign Root R46.
+# CentOS 6's newest vault package does not include R46.
+#
+#   ansible-playbook -i inventory ansible/centos-vault-repo.yml
+#   ansible-playbook -i inventory ansible/centos-vault-repo.yml -l 'group' -e batch_size=50
+#
+# Log in as root, or add -b. Already-root SSH can use -e ansible_become=false.
+# Check mode is not supported.
+
+- name: Switch CentOS 6/7 to vault yum repos
+  hosts: all
+  gather_facts: false
+  become: true
+  serial: "{{ batch_size | default(100) }}"
+  tasks:
+    - name: Read Enterprise Linux major version
+      ansible.builtin.raw: 'sed -n "s/.*release \([0-9][0-9]*\).*/\1/p" /etc/redhat-release'
+      register: release_cmd
+      changed_when: false
+
+    - name: Record major version
+      ansible.builtin.set_fact:
+        el_major: "{{ release_cmd.stdout | regex_search('[0-9]+') }}"
+
+    - name: Skip hosts that are not CentOS 6 or 7
+      ansible.builtin.fail:
+        msg: "Refusing {{ inventory_hostname }}: /etc/redhat-release major is {{ el_major | default('unknown') }}"
+      when: el_major not in ['6', '7']
+
+    - name: Load the matching repo file
+      ansible.builtin.set_fact:
+        repo_b64: "{{ lookup('file', playbook_dir + '/files/centos-' ~ el_major ~ '.repo') | b64encode }}"
+
+    - name: Install centos-{{ el_major }}.repo and update ca-certificates
+      ansible.builtin.raw: "printf %s {{ lookup('file', playbook_dir + '/files/apply-centos-repo.sh') | b64encode }} | base64 -d | REPO_B64={{ repo_b64 }} bash -s -- {{ el_major }}"
+      register: apply_cmd
+      changed_when: apply_cmd.stdout is search('(?m)^Updated:') or apply_cmd.stdout is search('(?m)^Installed:')
