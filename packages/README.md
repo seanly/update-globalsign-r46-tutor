@@ -40,7 +40,7 @@ rpm -Uvh globalsign-root-r46-2019.03.20-1.el6.noarch.rpm
 
 `%post` 会执行 `update-ca-trust enable`，然后 `update-ca-trust extract`。如果这台机器的 `/etc/pki/tls/certs/ca-bundle.crt` 曾经被手工改过，`enable` 会拒绝执行，以免丢掉原来追加的证书。先把那些证书挪进 `anchors`，再装这个包。
 
-这个包更新的是系统信任库。Java 如果使用独立的 `cacerts`，而不是指向 `/etc/pki/java/cacerts` 的符号链接，需要另外导入。
+这个包更新的是系统信任库。JDK 8 如果使用独立的 `jre/lib/security/cacerts`，而不是指向 `/etc/pki/java/cacerts` 的符号链接，用 `ansible/import-jdk8-cacerts.yml` 导入。
 
 ### 发布到 Nexus 3
 

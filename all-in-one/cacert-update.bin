@@ -1,0 +1,233 @@
+#!/bin/bash
+# All-in-one GlobalSign Root R46 installer. The certificate is embedded below.
+# Rebuild this file with all-in-one/build.sh after replacing the source certificate.
+set -eu
+
+CERT_B64='LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZXakNDQTBLZ0F3SUJBZ0lTRWRLN3VkY2pHSjVBWHdxZExkRGZKV2ZSTUEwR0NTcUdTSWIzRFFFQkRBVUEKTUVZeEN6QUpCZ05WQkFZVEFrSkZNUmt3RndZRFZRUUtFeEJIYkc5aVlXeFRhV2R1SUc1MkxYTmhNUnd3R2dZRApWUVFERXhOSGJHOWlZV3hUYVdkdUlGSnZiM1FnVWpRMk1CNFhEVEU1TURNeU1EQXdNREF3TUZvWERUUTJNRE15Ck1EQXdNREF3TUZvd1JqRUxNQWtHQTFVRUJoTUNRa1V4R1RBWEJnTlZCQW9URUVkc2IySmhiRk5wWjI0Z2JuWXQKYzJFeEhEQWFCZ05WQkFNVEUwZHNiMkpoYkZOcFoyNGdVbTl2ZENCU05EWXdnZ0lpTUEwR0NTcUdTSWIzRFFFQgpBUVVBQTRJQ0R3QXdnZ0lLQW9JQ0FRQ3NySFF5NkxObDVicnRReVlkcG9rTlJib3BpTEtrSFdQZDA4RXNDVmVKCk9hRlY2V2MwZHd4dTVGVWRVaVhTRTJ0ZTRSMnB0MzJKTWw4Tm5wOHNlbU5nUUIrbXNMWjRqNWxVbGdoWXJ1UUcKdkdJRkFoYS9yNmdqQTdhVUQ3eHViTUxMMWFhN0RPbjJ3UUw3SWQ1bTNSZXJkRUx2OEhRdkpmVHFhMVZia051ZAozMTZIQ2tEN3JSbHIrL2ZLWUlqZTJzR1AxcTdWZjlROGcrN1hGa3lEUlROcko5Q0cwQnd0YS9PcmZmR0ZxZlVvCjBxM3Y4NFJMSElmOEU2TTZjcUphRVN2V0ozRW43WUV0YldhQmtvZTBHMWg2ekQ4SytrWlBUWGhjK0N0STR3U0UKeTEzMnRHcXpaZnhDbmxFbUl5RExQUlQ1Z2UxbEZnQlBHbVNYWmdqUGpIdmpLOENkK1JUeUcvRldhaGEvTElXRgp6WGc0bXV0Q2FnSTBHSU1YVHBSVytMYUN0Zk9XM1QzenZuOGdkejU3R1NOckxOUnljME5YZmVENDEybFBGellFCitjQ1FZRGRGM3VZTTJIU05ycHlpYlhSZFFyNEc5ZGxrYmdJUXJJbXdURHNIVFVCK0pNV0ttSUo1anFTbmdpQ04KSS9vbmNjbmZ4a0Ywb0UzMmtSYmNSb3hmS1dNeFdYRU0yRy9DdGpKOSsrWmRVNlorRmZ5N2RYeGQ3UGoyRnh6cwp4MnNaeS9ONzhDc0hwZGxzZVZSMmJKMGNwbTRPNlhrTXFDTnFvOThiTURHZnNWUjcvbXJMWnFyY1pkQ2lua3FhCkJ5RnJnWS9ieEZuNjNpTEFCSnpqcWxzMmsrZzl2WHFoblF0MnNRdkhuZjNQbUtnR3d2Z3FvNkdEb0xjbGNxVUMKNHdJREFRQUJvMEl3UURBT0JnTlZIUThCQWY4RUJBTUNBWVl3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFkQmdOVgpIUTRFRmdRVUExeXJjNEdIcU15d3B0V1U0amFXU2Y4Rm1Td3dEUVlKS29aSWh2Y05BUUVNQlFBRGdnSUJBSHg0CjdQWUNMTHRiZnBJclhUbmN2dGdkb2tJelRmbnZwQ283UkdrZXJObEZvMDQ4cDlna1ViSlVISk5PeE85N2s0VmcKSnVvSlNPRDF1OGZwYU5LN2FqRnh6SG11RWFqd21mM2xIN3d2cU14WDYzYkVJYVpIVTFWTmFMOEZwTzdYSnF0aQoya00zUytMR3RlV3lneGs2eDlQYlRaNElldlB1eno1aSs2em9ZTXpSeDZGY2cwWEVSY3p6RjJzVXlRUUNQdElrCnBubnBIczZpNThGWkZaOGQ0a3VhUHA5MkNDMXIyTHBYRk5xRDZ2Nk1WZW5RVHFuTWR6R3hSQkY2WExFKzB4UkYKRlJoaUpCUFN5MDNPWElQQk52SVF0UTZJYmJqaFZwK0ozcFptT1Vka0xHNU5ybUo3djJCMEdiaFdySktzRmpMdApyV2hWL3BpNjB6VGU5TWxod3c2RzlrdUVZTzROZTdVeVdIbVJWU3lCUTdOMEgzcXFKWjRkMTZHTHVjMUNMZ1NrClpvTk5pVFcyYktnMlNua2hlQ0xRUXJ6UlFER1FvYjRFejhwbjdmWHdnTk5neVlNcUlnWFFCenRTdnd5ZXFpdjUKdStZZmp5VzZoWTBYSGdMK1hWQUVWOC8rTGJ6dlhNQWFxN2FmSk1iZmMyaElrQ3dVOUQ5U0d1VFN5eFREWVduUAo0dmtZeGJvem54U2pCRjI1Y2ZlMWxOajJNOEZhd1RTTGZKdmRrenJuRTZKd1laK3ZqK3ZZeFhYNE0yYlVkR2M2Ck4zZWM1OTJrRDNaRFpvcEQ4cC83REVKNFk5SGlEMjk3MUtFOWRKZUZ0MGc1UWRZZy9OQTZzL3JvYjhTS3VuRTMKdm91WHNYZ3hUN1BudGdNVHpsU2RyaVZaekg4MVh3ajNRRVV4ZUNwNgotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=='
+expected=4FA3126D8D3A11D1C4855A4F807CBAD6CF919D3A5A88B03BEA2C6372D93C40C9
+alias_name=globalsign-root-r46
+bundle=/etc/pki/tls/certs/ca-bundle.crt
+anchor=/etc/pki/ca-trust/source/anchors/globalsign-root-r46.crt
+pass="${CACERTS_PASS:-changeit}"
+
+check_only=0
+do_system=1
+do_jdk=1
+jdk_paths=""
+
+usage() {
+  cat <<'EOF'
+Usage: cacert-update.bin [--check] [--jdk-path PATH] [--system-only | --jdk-only]
+
+Install GlobalSign Root R46 into the system trust store and JDK 8 cacerts.
+The certificate is embedded in this file. Download it and run it on the host.
+
+  --check            report what is missing and do not change the host
+  --jdk-path PATH    JDK 8 home or a cacerts file; may be repeated
+  --system-only      only the system trust store
+  --jdk-only         only JDK 8 cacerts
+  -h, --help         show this help
+
+CACERTS_PASS overrides the JDK keystore password. The default is changeit.
+A cacerts symlink to /etc/pki/java/cacerts is skipped.
+Restart Java processes after a JDK keystore change.
+EOF
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --check) check_only=1 ;;
+    --system-only) do_jdk=0 ;;
+    --jdk-only) do_system=0 ;;
+    --jdk-path)
+      shift
+      if [ "$#" -eq 0 ] || [ -z "${1:-}" ]; then
+        echo "--jdk-path requires a path" >&2
+        exit 2
+      fi
+      jdk_paths="${jdk_paths}
+$1"
+      ;;
+    -h|--help) usage; exit 0 ;;
+    *)
+      echo "unknown argument: $1" >&2
+      usage >&2
+      exit 2
+      ;;
+  esac
+  shift
+done
+
+if [ "$do_system" -eq 0 ] && [ "$do_jdk" -eq 0 ]; then
+  echo "--system-only and --jdk-only cannot be combined" >&2
+  exit 2
+fi
+
+cert=$(mktemp /tmp/globalsign-root-r46.XXXXXX.crt)
+trap 'rm -f "$cert"' EXIT
+printf '%s' "$CERT_B64" | base64 -d > "$cert"
+fp=$(openssl x509 -in "$cert" -noout -fingerprint -sha256 | sed 's/.*=//; s/://g')
+if [ "$fp" != "$expected" ]; then
+  echo "embedded certificate fingerprint is $fp" >&2
+  exit 1
+fi
+
+missing=0
+
+system_has_r46() {
+  [ -f "$bundle" ] || return 1
+  openssl crl2pkcs7 -nocrl -certfile "$bundle" 2>/dev/null \
+    | openssl pkcs7 -print_certs -noout 2>/dev/null \
+    | grep -F 'GlobalSign Root R46' >/dev/null
+}
+
+install_system() {
+  if [ ! -x /usr/bin/update-ca-trust ]; then
+    echo "system: update-ca-trust is not installed" >&2
+    return 1
+  fi
+  mkdir -p "$(dirname "$anchor")"
+  install -m 644 "$cert" "$anchor"
+  /usr/bin/update-ca-trust enable
+  /usr/bin/update-ca-trust extract
+}
+
+resolve_cacerts() {
+  target=$1
+  if [ -f "$target" ]; then
+    printf '%s\n' "$target"
+    return 0
+  fi
+  if [ -d "$target" ]; then
+    if [ -e "$target/jre/lib/security/cacerts" ]; then
+      printf '%s\n' "$target/jre/lib/security/cacerts"
+      return 0
+    fi
+    if [ -e "$target/lib/security/cacerts" ]; then
+      printf '%s\n' "$target/lib/security/cacerts"
+      return 0
+    fi
+  fi
+  echo "jdk: path not found $target" >&2
+  return 1
+}
+
+list_cacerts() {
+  if [ -n "$jdk_paths" ]; then
+    printf '%s\n' "$jdk_paths"
+    return
+  fi
+  if [ -n "${JAVA_HOME:-}" ]; then
+    printf '%s\n' "$JAVA_HOME"
+  fi
+  roots=""
+  for root in /usr/lib/jvm /usr/java /opt/java /usr/local/java; do
+    [ -d "$root" ] || continue
+    roots="$roots $root"
+  done
+  if [ -n "$roots" ]; then
+    # shellcheck disable=SC2086
+    find $roots \( -path '*/lib/security/cacerts' \) \( -type f -o -type l \) 2>/dev/null || true
+  fi
+}
+
+jdk_has_alias() {
+  ks=$1
+  keytool_bin=$2
+  "$keytool_bin" -list -alias "$alias_name" -keystore "$ks" -storepass "$pass" >/dev/null 2>&1
+}
+
+handle_jdk() {
+  ks=$1
+  if [ ! -e "$ks" ]; then
+    echo "jdk: missing $ks"
+    missing=1
+    return
+  fi
+  if [ -L "$ks" ]; then
+    echo "jdk: skip symlink $ks -> $(readlink "$ks")"
+    return
+  fi
+  jre=$(cd "$(dirname "$ks")/../../.." && pwd)
+  java_bin="$jre/bin/java"
+  keytool_bin="$jre/bin/keytool"
+  if [ ! -x "$java_bin" ] || [ ! -x "$keytool_bin" ]; then
+    echo "jdk: skip $ks (no java or keytool)"
+    return
+  fi
+  if ! "$java_bin" -version 2>&1 | grep -q 'version "1\.8'; then
+    echo "jdk: skip $ks (not JDK 8)"
+    return
+  fi
+  if jdk_has_alias "$ks" "$keytool_bin"; then
+    echo "jdk: present $ks"
+    return
+  fi
+  echo "jdk: missing $ks"
+  missing=1
+  if [ "$check_only" -eq 1 ]; then
+    return
+  fi
+  "$keytool_bin" -importcert -noprompt -trustcacerts \
+    -alias "$alias_name" \
+    -file "$cert" \
+    -keystore "$ks" \
+    -storepass "$pass"
+  echo "jdk: imported $ks"
+}
+
+if [ "$check_only" -eq 0 ] && [ "$(id -u)" -ne 0 ]; then
+  echo "run as root, or use --check" >&2
+  exit 1
+fi
+
+if [ "$do_system" -eq 1 ]; then
+  if system_has_r46; then
+    echo "system: present $bundle"
+  else
+    echo "system: missing $bundle"
+    missing=1
+    if [ "$check_only" -eq 0 ]; then
+      install_system
+      if system_has_r46; then
+        echo "system: installed $bundle"
+      else
+        echo "system: install did not add GlobalSign Root R46" >&2
+        exit 1
+      fi
+    fi
+  fi
+fi
+
+if [ "$do_jdk" -eq 1 ]; then
+  seen=" "
+  found=0
+  while IFS= read -r ks; do
+    [ -n "$ks" ] || continue
+    if [ -d "$ks" ] || [ ! -e "$ks" ]; then
+      if ! resolved=$(resolve_cacerts "$ks"); then
+        missing=1
+        continue
+      fi
+      ks=$resolved
+    fi
+    if [ -e "$ks" ] && [ ! -L "$ks" ]; then
+      id=$(stat -c '%d:%i' "$ks" 2>/dev/null || stat -f '%d:%i' "$ks")
+      case "$seen" in
+        *" $id "*) continue ;;
+      esac
+      seen="$seen$id "
+    fi
+    found=1
+    handle_jdk "$ks"
+  done <<EOF
+$(list_cacerts)
+EOF
+  if [ "$found" -eq 0 ] && [ -z "$jdk_paths" ]; then
+    echo "jdk: no JDK 8 cacerts found"
+  fi
+fi
+
+if [ "$check_only" -eq 1 ] && [ "$missing" -ne 0 ]; then
+  exit 1
+fi
