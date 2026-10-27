@@ -1,21 +1,28 @@
 ---
-# Import GlobalSign Root R46 into private JDK 8 cacerts files.
-# A cacerts symlink to /etc/pki/java/cacerts is skipped; that file belongs to
-# update-ca-trust and is replaced the next time the system trust store is rebuilt.
+# Report JDK 8 cacerts and Java listen addresses, then run jdk8/cacert-update.bin.
+# The binary must already exist (bash jdk8/build.sh). It is not compiled on the host.
+# Certificates already in the store are skipped by SHA-256. Symlinks are skipped.
 #
 #   ansible-playbook -i inventory ansible/import-jdk8-cacerts.yml
 #   ansible-playbook -i inventory ansible/import-jdk8-cacerts.yml -e cacerts_pass=changeit
+#   ansible-playbook -i inventory ansible/import-jdk8-cacerts.yml -e jdk_check=true
+#   ansible-playbook -i inventory ansible/import-jdk8-cacerts.yml -e jdk_paths='/usr/java/jdk1.8.0_201 /usr/lib/jvm/java-1.8.0'
 #
 # Log in as root, or add -b. Already-root SSH can use -e ansible_become=false.
 # Check mode is not supported. Running Java processes must be restarted.
 
-- name: Import GlobalSign Root R46 into JDK 8 cacerts
+- name: Import JDK 8 trust roots
   hosts: all
   gather_facts: false
   become: true
   serial: "{{ batch_size | default(100) }}"
   tasks:
-    - name: Import the pinned root into each JDK 8 keystore
-      ansible.builtin.raw: "printf %s {{ lookup('file', playbook_dir + '/files/import-jdk8-cacerts.sh') | b64encode }} | base64 -d | CERT_B64={{ lookup('file', playbook_dir + '/../packages/centos6/sources/globalsign-root-r46.crt') | b64encode }} CACERTS_PASS='{{ cacerts_pass | default('changeit') }}' bash"
+    - name: Report JDK 8 installs and Java listeners
+      ansible.builtin.raw: "printf %s {{ lookup('file', playbook_dir + '/files/inspect-jdk.sh') | b64encode }} | base64 -d | bash"
+      register: inspect_cmd
+      changed_when: false
+
+    - name: Run the bundled JDK 8 importer
+      ansible.builtin.raw: "printf %s {{ lookup('file', playbook_dir + '/files/run-jdk8-cacert-update.sh') | b64encode }} | base64 -d | BIN_B64={{ lookup('file', playbook_dir + '/../jdk8/cacert-update.bin') | b64encode }} CACERTS_PASS='{{ cacerts_pass | default('changeit') }}' CHECK_ONLY={{ '1' if (jdk_check | default(false) | bool) else '0' }} bash -s -- {{ jdk_paths | default('') }}"
       register: import_cmd
-      changed_when: import_cmd.stdout is search('(?m)^imported ')
+      changed_when: import_cmd.stdout is search('imported [1-9]')

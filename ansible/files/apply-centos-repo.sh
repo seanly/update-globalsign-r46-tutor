@@ -25,5 +25,5 @@ if [ "$major" = "7" ]; then
 fi
 
 if [ "$major" = "6" ]; then
-  echo "NOTE: CentOS 6 vault ca-certificates does not include GlobalSign Root R46"
+  echo "NOTE: CentOS 6 vault ca-certificates does not include the new public roots; install el6-ca-trust-extras with ansible/install-el6-ca-trust-extras.yml"
 fi

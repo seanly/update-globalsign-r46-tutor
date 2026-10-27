@@ -1,0 +1,36 @@
+---
+# Install packages/centos6/RPMS/el6-ca-trust-extras on CentOS 6.
+# Run ansible/centos-vault-repo.yml first so ca-certificates is the vault package.
+# CentOS 7 and other hosts are skipped.
+#
+#   ansible-playbook -i inventory ansible/install-el6-ca-trust-extras.yml
+#   ansible-playbook -i inventory ansible/install-el6-ca-trust-extras.yml -l 'group' -e batch_size=50
+#
+# Log in as root, or add -b. Already-root SSH can use -e ansible_become=false.
+# Check mode is not supported. Build the RPM with packages/centos6/build.sh first.
+
+- name: Install el6-ca-trust-extras on CentOS 6
+  hosts: all
+  gather_facts: false
+  become: true
+  serial: "{{ batch_size | default(100) }}"
+  tasks:
+    - name: Read Enterprise Linux major version
+      ansible.builtin.raw: 'test -f /etc/redhat-release && sed -n "s/.*release \([0-9][0-9]*\).*/\1/p" /etc/redhat-release || true'
+      register: release_cmd
+      changed_when: false
+
+    - name: Record major version
+      ansible.builtin.set_fact:
+        el_major: "{{ release_cmd.stdout | regex_search('[0-9]+') | default('unknown', true) }}"
+
+    - name: Note hosts that are not CentOS 6
+      ansible.builtin.debug:
+        msg: "Skipping {{ inventory_hostname }}: Enterprise Linux major is {{ el_major }}"
+      when: el_major != '6'
+
+    - name: Install el6-ca-trust-extras
+      ansible.builtin.raw: "printf %s {{ lookup('file', playbook_dir + '/files/install-el6-ca-trust-extras.sh') | b64encode }} | base64 -d | RPM_B64={{ lookup('file', playbook_dir + '/../packages/centos6/RPMS/el6-ca-trust-extras-2023.2.60-1.el6.noarch.rpm') | b64encode }} bash"
+      register: install_cmd
+      changed_when: install_cmd.stdout is search('(?m)^Installed:')
+      when: el_major == '6'
