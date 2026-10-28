@@ -77,6 +77,28 @@ chmod +x cacert-update.bin
 
 证书、指纹清单或 `import-roots.sh` 改过之后，重新执行 `bash jdk8/build.sh`。CentOS 6 系统信任库的 RPM 另行打包，见 [packages/README.md](packages/README.md)。
 
+### 验证
+
+`--check` 只说明指纹在 `cacerts` 里。JSSE 是否用这些根，不在 `build.sh` 里做。在本机执行：
+
+```bash
+bash jdk8/check-trust.sh
+```
+
+默认 JDK 镜像是 `tcr.chinawayltd.com/g7-base/java:jaeger-8u201-v0.8`。平台默认 `linux/amd64`。换镜像用 `JDK8_IMAGE`，换平台用 `DOCKER_PLATFORM`。
+
+脚本先在 CentOS 6 容器里跑 [packages/centos6/fetch-chains.sh](packages/centos6/fetch-chains.sh)，抓 7 张直链的叶子和中间证书。抓链镜像默认是 `centos:6`，用 `CENTOS6_IMAGE` 改。然后进入 8u201 容器，用那份 JDK 自己的 `java`、`keytool` 和 `javac`。镜像自带的 `cacerts` 复制出来当导入前的库，容器里的原文件保持不动。
+
+[jdk8/PkixCheck.java](jdk8/PkixCheck.java) 在容器里编译。它只校验通向 [trust-targets.txt](packages/centos6/trust-targets.txt) 里那张根的路径。中间证书文件里如果还有交叉证书，不会拿去校验。吊销检查关掉，成败只看信任锚。对每一张直链：
+
+- 导入前的副本必须失败。失败说明旧库没有另一条路径。已经成功时记一行，说明旧库里已有路径。
+- 只把这一张根放进临时信任库必须成功。
+- `import-roots.sh` 导入后的副本必须成功。
+
+其余 15 张没有稳定的公开直链。导入后 `--check` 必须是 missing 0，22 张指纹都在。
+
+实时握手只打印，不决定成败。8u201 没有 TLS 1.3。DigiCert G5 和 Microsoft 2017 的演示站还会发送旧库已经信任的交叉链，导入前的握手也可能成功。`CACERTS_PASS` 用来指定库口令，默认 `changeit`。
+
 ## RPM
 
 打包、安装和发布到 Nexus 3 的说明见 [packages/README.md](packages/README.md)。

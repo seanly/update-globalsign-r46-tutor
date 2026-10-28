@@ -1,0 +1,11 @@
+# SHA-256, anchor filename, and a hostname whose direct TLS path ends at that root.
+# Cross-signed demo hosts are omitted. A handshake may still attach a cross
+# certificate; fetch-chains.sh also downloads AIA CA Issuers so the direct
+# intermediate is available, and the check keeps only the path to this root.
+4FA3126D8D3A11D1C4855A4F807CBAD6CF919D3A5A88B03BEA2C6372D93C40C9  globalsign-root-r46.crt  valid.r46.roots.globalsign.com
+CBB9C44D84B8043E1050EA31A69F514955D7BFD2E2C6B49301019AD61D9F5058  globalsign-root-e46.crt  valid.e46.roots.globalsign.com
+371A00DC0533B3721A7EEB40E8419E70799D2B0A0F2C1D80693165F7CEC4AD75  digicert-tls-rsa4096-root-g5.crt  digicert-tls-rsa4096-root-g5.chain-demos.digicert.com
+018E13F0772532CF809BD1B17281867283FC48C6E13BE9C69812854A490C1B05  digicert-tls-ecc-p384-root-g5.crt  digicert-tls-ecc-p384-root-g5.chain-demos.digicert.com
+69729B8E15A86EFC177A57AFB7171DFC64ADD28C2FCA8CF1507E34453CCB1470  isrg-root-x2.crt  valid-isrgrootx2.letsencrypt.org
+C741F70F4B2A8D88BF2E71C14122EF53EF10EBA0CFA5E64CFA20F418853073E0  microsoft-rsa-root-certificate-authority-2017.crt  actrsaroot2017.pki.microsoft.com
+358DF39D764AF9E1B766E9C972DF352EE15CFAC227AF6AD1D70E8E4A6EDCBA02  microsoft-ecc-root-certificate-authority-2017.crt  acteccroot2017.pki.microsoft.com

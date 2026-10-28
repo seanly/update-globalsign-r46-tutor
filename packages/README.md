@@ -56,6 +56,18 @@ packages/centos6/RPMS/el6-ca-trust-extras-2023.2.60-1.el6.noarch.rpm
 
 脚本会先把容器里的 `ca-certificates` 升到 `2020.2.41`，安装这个包，按指纹确认 7 张根都进入 `ca-bundle.crt`，并确认旧的 GTS Root R1 还在。卸载后再确认这 7 张消失，旧的 GTS Root R1 仍在。
 
+指纹只说明证书写进了 bundle。根是否有用、系统信任库是否真的用了它们，不在 `build.sh` 里做，而是在 CentOS 6 容器里单独做。主机名在 [trust-targets.txt](centos6/trust-targets.txt)。交叉签名演示站不用。容器里的 `fetch-chains.sh` 抓叶子和中间证书。握手里如果只带着交叉证书，会再按 AIA 的 CA Issuers 把直链中间证书补上，校验时只留通向这一张根的路径。
+
+`check-system-trust.sh` 用 CentOS 6 的 `openssl verify -purpose sslserver` 做三次对比：
+
+- 安装前保存的 `ca-certificates-2020.2.41` bundle 必须失败。失败说明旧信任库没有另一条可用路径。
+- 只把包里的这一张根当作信任锚必须成功。成功说明链接到的是这一张证书。
+- 安装后的 `/etc/pki/tls/certs/ca-bundle.crt` 必须是符号链接，并且校验成功。成功说明应用程序读到的系统信任库已经信任这条链。
+
+卸载扩展包后，系统 bundle 对同一条链必须再次失败。
+
+容器里还会用 `openssl s_client` 探一次实时握手，结果只打印，不决定 `openssl verify` 是否通过。看到 `Verify return code: 0 (ok)` 表示握手时系统信任库也接受了证书。如果输出是「信任已通过，实时握手未完成」，前面的 `openssl verify` 已经通过，失败来自 TLS 版本或套件，不是信任库拒绝了这张根。`curl` 走 NSS，能连上会另外记一行；连不上同样不推翻 `openssl verify`。
+
 ### 安装
 
 ```bash
